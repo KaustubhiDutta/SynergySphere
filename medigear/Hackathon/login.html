@@ -1,0 +1,1367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediGear - Login & Sign Up</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --soft-lavender-blue: #C7D2FE;
+            --misty-sky-blue: #DFF6FF;
+            --pale-aqua: #E6FAF5;
+            --blush-pink: #F5D0FE;
+            --off-white: #FAFAFF;
+            --text-dark: #1F2937;
+            --text-medium: #4B5563;
+            --success-color: #10B981;
+            --error-color: #EF4444;
+            --primary-gradient: linear-gradient(135deg, var(--soft-lavender-blue) 0%, var(--blush-pink) 100%);
+        }
+
+        /* Animated Background */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: -2;
+            overflow: hidden;
+        }
+
+        .bg-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.2;
+            z-index: -2;
+        }
+
+        .floating-shapes {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.2;
+            animation: float 15s infinite linear;
+        }
+
+        .shape:nth-child(1) {
+            width: 80px;
+            height: 80px;
+            background-color: var(--blush-pink);
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .shape:nth-child(2) {
+            width: 120px;
+            height: 120px;
+            background-color: var(--pale-aqua);
+            top: 60%;
+            left: 80%;
+            animation-delay: -5s;
+        }
+
+        .shape:nth-child(3) {
+            width: 60px;
+            height: 60px;
+            background-color: var(--soft-lavender-blue);
+            top: 80%;
+            left: 20%;
+            animation-delay: -10s;
+        }
+
+        .shape:nth-child(4) {
+            width: 100px;
+            height: 100px;
+            background-color: var(--misty-sky-blue);
+            top: 20%;
+            left: 85%;
+            animation-delay: -7s;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            33% {
+                transform: translateY(-30px) rotate(120deg);
+            }
+            66% {
+                transform: translateY(20px) rotate(240deg);
+            }
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow: auto; /* Changed from hidden to auto */
+        }
+
+        /* Back to Home Button */
+        .back-to-home {
+            position: fixed; /* Changed from absolute to fixed */
+            top: 20px;
+            right: 20px;
+            z-index: 10;
+        }
+
+        .back-btn {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 5px 15px rgba(199, 210, 254, 0.4);
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(199, 210, 254, 0.5);
+        }
+
+        /* Main Container - INCREASED HEIGHT FURTHER */
+        .auth-wrapper {
+            width: 100%;
+            max-width: 1000px; /* Increased from 950px */
+            height: 650px; /* Increased from 600px */
+            background: white;
+            border-radius: 30px;
+            overflow: hidden;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.3);
+            display: flex;
+            position: relative;
+        }
+
+        /* Left Panel - REDUCED HEIGHT FOR BALANCE */
+        .left-panel {
+            flex: 1;
+            background: var(--primary-gradient);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            overflow: hidden;
+            transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .left-panel::before {
+            content: '';
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 50%;
+            top: -100px;
+            left: -100px;
+            animation: float 15s infinite ease-in-out;
+        }
+
+        .left-panel::after {
+            content: '';
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            bottom: -50px;
+            right: -50px;
+            animation: float 20s infinite ease-in-out reverse;
+        }
+
+        .diagonal-stripe {
+            position: absolute;
+            width: 150%;
+            height: 150%;
+            background: linear-gradient(
+                135deg,
+                transparent 30%,
+                rgba(255, 255, 255, 0.08) 40%,
+                rgba(255, 255, 255, 0.12) 45%,
+                rgba(255, 255, 255, 0.08) 50%,
+                transparent 60%
+            );
+            top: -25%;
+            left: -25%;
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Welcome Content - ADJUSTED */
+        .welcome-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            color: white;
+            padding: 20px;
+        }
+
+        .welcome-content h2 {
+            font-size: 2rem; /* Reduced from 2.2rem */
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .welcome-content p {
+            font-size: 0.95rem; /* Reduced from 1rem */
+            opacity: 0.95;
+            margin-bottom: 20px; /* Reduced from 25px */
+            line-height: 1.5;
+        }
+
+        .toggle-btn {
+            background: white;
+            color: var(--text-dark);
+            border: none;
+            padding: 12px 30px; /* Reduced from 14px 35px */
+            border-radius: 50px;
+            font-size: 0.95rem; /* Reduced from 1rem */
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .toggle-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+        }
+
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* Right Panel - Form - ADJUSTED FOR BETTER FIT */
+        .right-panel {
+            flex: 1;
+            background: white;
+            padding: 30px 40px; /* Reduced top/bottom padding */
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start; /* Changed from center */
+            position: relative;
+            overflow-y: auto; /* Added scroll if needed */
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 20px; /* Reduced from 25px */
+        }
+
+        .user-icon {
+            width: 65px; /* Reduced from 70px */
+            height: 65px; /* Reduced from 70px */
+            background: var(--primary-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px; /* Reduced from 15px */
+            box-shadow: 0 10px 30px rgba(199, 210, 254, 0.4);
+        }
+
+        .user-icon i {
+            font-size: 1.6rem; /* Reduced from 1.8rem */
+            color: white;
+        }
+
+        .form-title {
+            font-size: 1.7rem; /* Reduced from 1.8rem */
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 5px; /* Reduced from 8px */
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .form-subtitle {
+            color: var(--text-medium);
+            font-size: 0.85rem; /* Reduced from 0.9rem */
+        }
+
+        /* Demo Credentials Box - COMPACT */
+        .demo-credentials {
+            background: rgba(199, 210, 254, 0.1);
+            border: 1px solid rgba(199, 210, 254, 0.3);
+            border-radius: 10px;
+            padding: 10px; /* Reduced from 12px */
+            margin-bottom: 15px; /* Reduced from 20px */
+            font-size: 0.8rem; /* Reduced from 0.85rem */
+        }
+
+        .demo-credentials h3 {
+            color: var(--text-dark);
+            margin-bottom: 6px; /* Reduced from 8px */
+            display: flex;
+            align-items: center;
+            gap: 6px; /* Reduced from 8px */
+            font-size: 0.85rem; /* Reduced from 0.9rem */
+        }
+
+        .demo-credentials h3 i {
+            color: var(--blush-pink);
+        }
+
+        .credential-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 4px; /* Reduced from 6px */
+            padding: 2px 0; /* Reduced from 3px 0 */
+        }
+
+        .credential-label {
+            font-weight: 500;
+            color: var(--text-medium);
+        }
+
+        .credential-value {
+            font-weight: 600;
+            color: var(--text-dark);
+            background: linear-gradient(135deg, var(--soft-lavender-blue), var(--blush-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            word-break: break-all;
+            max-width: 60%;
+            text-align: right;
+        }
+
+        /* Form - FIXED VISIBILITY */
+        .auth-form {
+            position: absolute;
+            width: calc(100% - 80px);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+            top: 0;
+            left: 0;
+            padding: 0 40px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .auth-form.active {
+            opacity: 1;
+            visibility: visible;
+            position: relative;
+            width: 100%;
+            padding: 0;
+            height: auto;
+        }
+
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .form-group {
+            margin-bottom: 15px; /* Reduced from 18px */
+            position: relative;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 12px; /* Reduced from 15px */
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-medium);
+            font-size: 1rem; /* Reduced from 1.1rem */
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 15px 12px 40px; /* Reduced from 14px 20px 14px 45px */
+            border: none;
+            border-bottom: 2px solid #E5E7EB;
+            font-size: 0.95rem; /* Reduced from 1rem */
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-dark);
+            background: transparent;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-bottom-color: var(--blush-pink);
+        }
+
+        .form-input::placeholder {
+            color: var(--text-medium);
+            opacity: 0.6;
+        }
+
+        /* Forgot Password */
+        .forgot-password {
+            text-align: right;
+            margin: -5px 0 10px; /* Reduced from -8px 0 15px */
+        }
+
+        .forgot-password a {
+            color: var(--blush-pink);
+            text-decoration: none;
+            font-size: 0.8rem; /* Reduced from 0.85rem */
+            font-weight: 500;
+        }
+
+        .forgot-password a:hover {
+            text-decoration: underline;
+        }
+
+        /* Submit Button - ENSURED VISIBILITY */
+        .submit-btn {
+            width: 100%;
+            padding: 13px; /* Reduced from 14px */
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 0.95rem; /* Reduced from 1rem */
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 5px; /* Reduced from 8px */
+            margin-bottom: 5px; /* Added spacing below */
+            box-shadow: 0 10px 30px rgba(199, 210, 254, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: block; /* Ensure it's visible */
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(199, 210, 254, 0.5);
+        }
+
+        /* Quick Login Button */
+        .quick-login {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px; /* Reduced from 18px */
+            margin-bottom: 10px;
+        }
+
+        .quick-login-btn {
+            padding: 10px 15px; /* Reduced from 12px 20px */
+            background: linear-gradient(135deg, var(--blush-pink) 0%, var(--soft-lavender-blue) 100%);
+            border: none;
+            border-radius: 12px;
+            color: var(--text-dark);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px; /* Reduced from 10px */
+            font-size: 0.85rem; /* Reduced from 0.9rem */
+        }
+
+        .quick-login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(245, 208, 254, 0.4);
+        }
+
+        /* Social Login - ENSURED VISIBILITY */
+        .divider {
+            text-align: center;
+            margin: 12px 0; /* Reduced from 18px 0 */
+            position: relative;
+        }
+
+        .divider span {
+            background: white;
+            padding: 0 10px; /* Reduced from 12px */
+            color: var(--text-medium);
+            font-size: 0.8rem; /* Reduced from 0.85rem */
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            width: 100%;
+            height: 1px;
+            background: #E5E7EB;
+            z-index: -1;
+        }
+
+        .social-login {
+            display: flex;
+            gap: 10px; /* Reduced from 12px */
+            margin-bottom: 10px;
+        }
+
+        .social-btn {
+            flex: 1;
+            padding: 10px; /* Reduced from 12px */
+            border: 2px solid #E5E7EB;
+            background: white;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px; /* Reduced from 8px */
+            font-weight: 500;
+            color: var(--text-dark);
+            font-size: 0.85rem; /* Reduced from 0.9rem */
+        }
+
+        .social-btn:hover {
+            border-color: var(--blush-pink);
+            transform: translateY(-2px);
+        }
+
+        .social-btn i {
+            font-size: 1rem; /* Reduced from 1.1rem */
+        }
+
+        .social-btn.google { color: #DB4437; }
+        .social-btn.facebook { color: #4267B2; }
+
+        /* Panel Slide Animation */
+        .auth-wrapper.signup-mode .left-panel {
+            order: 2;
+        }
+
+        .auth-wrapper.signup-mode .right-panel {
+            order: 1;
+        }
+
+        /* Checkbox */
+        .checkbox-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px; /* Reduced from 10px */
+            margin: 8px 0; /* Reduced from 12px 0 */
+        }
+
+        .checkbox-wrapper input[type="checkbox"] {
+            width: 16px; /* Reduced from 18px */
+            height: 16px; /* Reduced from 18px */
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .checkbox-wrapper label {
+            font-size: 0.8rem; /* Reduced from 0.85rem */
+            color: var(--text-medium);
+            cursor: pointer;
+            line-height: 1.3;
+        }
+
+        .checkbox-wrapper a {
+            color: var(--blush-pink);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .checkbox-wrapper a:hover {
+            text-decoration: underline;
+        }
+
+        /* Alert Messages */
+        .alert {
+            padding: 10px 12px; /* Reduced from 12px 15px */
+            border-radius: 10px;
+            margin-bottom: 10px; /* Reduced from 15px */
+            display: none;
+            align-items: center;
+            gap: 8px; /* Reduced from 10px */
+            animation: slideDown 0.3s ease;
+            font-size: 0.8rem; /* Reduced from 0.85rem */
+        }
+
+        .alert.show {
+            display: flex;
+        }
+
+        .alert-success {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: var(--success-color);
+        }
+
+        .alert-error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: var(--error-color);
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Loading State */
+        .submit-btn.loading {
+            position: relative;
+            color: transparent;
+        }
+
+        .submit-btn.loading::after {
+            content: '';
+            position: absolute;
+            width: 18px; /* Reduced from 20px */
+            height: 18px; /* Reduced from 20px */
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            animation: spin 0.6s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        /* Password Requirements - SIMPLIFIED */
+        .requirements {
+            font-size: 0.75rem; /* Reduced from 0.8rem */
+            color: var(--text-medium);
+            margin-top: 4px; /* Reduced from 6px */
+            padding-left: 3px; /* Reduced from 5px */
+            display: none; /* HIDDEN AS REQUESTED */
+        }
+
+        /* Show password requirements only when typing */
+        #signupPassword:focus ~ .requirements {
+            display: grid;
+        }
+
+        .requirement {
+            display: flex;
+            align-items: center;
+            gap: 4px; /* Reduced from 6px */
+            margin-bottom: 2px; /* Reduced from 3px */
+        }
+
+        .requirement.met {
+            color: var(--success-color);
+        }
+
+        .requirement i {
+            font-size: 0.65rem; /* Reduced from 0.7rem */
+            flex-shrink: 0;
+        }
+
+        .requirement span {
+            white-space: nowrap;
+        }
+
+        .password-strength {
+            height: 3px; /* Reduced from 4px */
+            background: rgba(199, 210, 254, 0.3);
+            border-radius: 2px;
+            margin-top: 4px; /* Reduced from 6px */
+            overflow: hidden;
+        }
+
+        .strength-bar {
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 2px;
+        }
+
+        .strength-weak { background: var(--error-color); width: 25%; }
+        .strength-fair { background: #F59E0B; width: 50%; }
+        .strength-good { background: #3B82F6; width: 75%; }
+        .strength-strong { background: var(--success-color); width: 100%; }
+
+        .strength-text {
+            font-size: 0.75rem; /* Reduced from 0.8rem */
+            margin-top: 3px; /* Reduced from 4px */
+            text-align: right;
+            height: 14px; /* Reduced from 16px */
+        }
+
+        /* Hide social login in signup form */
+        #signupForm .divider,
+        #signupForm .social-login {
+            display: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .auth-wrapper {
+                flex-direction: column;
+                height: auto;
+                max-width: 450px;
+                min-height: 600px;
+            }
+
+            .left-panel {
+                padding: 25px 20px;
+                min-height: 180px;
+            }
+
+            .right-panel {
+                padding: 25px 20px;
+                min-height: 420px;
+            }
+
+            .welcome-content h2 {
+                font-size: 1.6rem;
+            }
+
+            .welcome-content p {
+                font-size: 0.85rem;
+                margin-bottom: 15px;
+            }
+
+            .form-title {
+                font-size: 1.5rem;
+            }
+
+            .auth-wrapper.signup-mode .left-panel {
+                order: 1;
+            }
+
+            .auth-wrapper.signup-mode .right-panel {
+                order: 2;
+            }
+            
+            /* Show back button on mobile */
+            .back-to-home {
+                display: block;
+                position: absolute;
+                top: 15px;
+                right: 15px;
+            }
+            
+            .back-btn {
+                padding: 8px 15px;
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .auth-wrapper {
+                border-radius: 20px;
+                max-width: 100%;
+            }
+
+            .left-panel,
+            .right-panel {
+                padding: 20px 15px;
+            }
+
+            .welcome-content h2 {
+                font-size: 1.4rem;
+            }
+
+            .form-title {
+                font-size: 1.3rem;
+            }
+
+            .social-login {
+                flex-direction: column;
+            }
+
+            /* Hide demo credentials on mobile in signup mode */
+            .signup-mode .demo-credentials {
+                display: none;
+            }
+            
+            .back-btn {
+                padding: 6px 12px;
+                font-size: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="animated-bg">
+        <video autoplay muted loop playsinline class="bg-video">
+            <source src="bg.mp4" type="video/mp4">
+        </video>
+        <div class="floating-shapes">
+            <div class="shape"></div>
+            <div class="shape"></div>
+            <div class="shape"></div>
+            <div class="shape"></div>
+        </div>
+    </div>
+
+    <!-- Back to Home Button -->
+    <div class="back-to-home">
+        <button class="back-btn" onclick="window.location.href='index.html'">
+            <i class="fas fa-home"></i>
+            Back to Home
+        </button>
+    </div>
+
+    <!-- Auth Wrapper -->
+    <div class="auth-wrapper" id="authWrapper">
+        <!-- Left Panel -->
+        <div class="left-panel">
+            <div class="diagonal-stripe"></div>
+            <div class="welcome-content">
+                <h2 id="welcomeTitle">Welcome Back!</h2>
+                <p id="welcomeDescription">To keep connected with us please login with your personal info</p>
+                <button class="toggle-btn" id="toggleBtn" onclick="togglePanel()">
+                    <span id="toggleText">Sign Up</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Right Panel -->
+        <div class="right-panel">
+            <!-- Alert Messages -->
+            <div class="alert alert-success" id="successAlert">
+                <i class="fas fa-check-circle"></i>
+                <span id="successMessage"></span>
+            </div>
+            <div class="alert alert-error" id="errorAlert">
+                <i class="fas fa-exclamation-circle"></i>
+                <span id="errorMessage"></span>
+            </div>
+
+            <!-- Login Form -->
+            <form class="auth-form active" id="loginForm">
+                <div class="form-header">
+                    <div class="user-icon">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h2 class="form-title">Login</h2>
+                    <p class="form-subtitle">Welcome back to MediGear</p>
+                </div>
+
+                <!-- Demo Credentials -->
+                <div class="demo-credentials">
+                    <h3><i class="fas fa-key"></i> Demo Credentials</h3>
+                    <div class="credential-item">
+                        <span class="credential-label">Email:</span>
+                        <span class="credential-value">demo@medigear.com</span>
+                    </div>
+                    <div class="credential-item">
+                        <span class="credential-label">Password:</span>
+                        <span class="credential-value">123456</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="input-wrapper">
+                        <i class="input-icon fas fa-envelope"></i>
+                        <input type="email" class="form-input" id="loginEmail" placeholder="Email" value="demo@medigear.com" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="input-wrapper">
+                        <i class="input-icon fas fa-lock"></i>
+                        <input type="password" class="form-input" id="loginPassword" placeholder="Password" value="123456" required>
+                    </div>
+                </div>
+
+                <div class="forgot-password">
+                    <a href="#" onclick="alert('Password reset feature coming soon!'); return false;">Forgot Password?</a>
+                </div>
+
+                <button type="submit" class="submit-btn">Login</button>
+
+                <!-- Quick Login Button -->
+                <div class="quick-login">
+                    <button type="button" class="quick-login-btn" onclick="quickLogin()">
+                        <i class="fas fa-bolt"></i>
+                        Quick Login with Demo Account
+                    </button>
+                </div>
+
+                <div class="divider">
+                    <span>Or Login With</span>
+                </div>
+
+                <div class="social-login">
+                    <button type="button" class="social-btn google" onclick="socialLogin('google')">
+                        <i class="fab fa-google"></i>
+                        <span>Google</span>
+                    </button>
+                    <button type="button" class="social-btn facebook" onclick="socialLogin('facebook')">
+                        <i class="fab fa-facebook-f"></i>
+                        <span>Facebook</span>
+                    </button>
+                </div>
+            </form>
+
+            <!-- Sign Up Form - SIMPLIFIED -->
+            <form class="auth-form" id="signupForm">
+                <div class="form-header">
+                    <div class="user-icon">
+                        <i class="fas fa-user-plus"></i>
+                    </div>
+                    <h2 class="form-title">Sign Up</h2>
+                    <p class="form-subtitle">Create your MediGear account</p>
+                </div>
+
+                <div class="form-group">
+                    <div class="input-wrapper">
+                        <i class="input-icon fas fa-user"></i>
+                        <input type="text" class="form-input" id="signupName" placeholder="Full Name" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="input-wrapper">
+                        <i class="input-icon fas fa-envelope"></i>
+                        <input type="email" class="form-input" id="signupEmail" placeholder="Email" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="input-wrapper">
+                        <i class="input-icon fas fa-lock"></i>
+                        <input type="password" class="form-input" id="signupPassword" placeholder="Password" required>
+                        <div class="password-strength">
+                            <div class="strength-bar" id="strengthBar"></div>
+                        </div>
+                        <div class="strength-text" id="strengthText"></div>
+                        <!-- Password requirements are now hidden by default -->
+                        <div class="requirements" id="passwordRequirements">
+                            <div class="requirement" id="reqLength">
+                                <i class="fas fa-circle"></i>
+                                <span>8+ characters</span>
+                            </div>
+                            <div class="requirement" id="reqUppercase">
+                                <i class="fas fa-circle"></i>
+                                <span>Uppercase</span>
+                            </div>
+                            <div class="requirement" id="reqLowercase">
+                                <i class="fas fa-circle"></i>
+                                <span>Lowercase</span>
+                            </div>
+                            <div class="requirement" id="reqNumber">
+                                <i class="fas fa-circle"></i>
+                                <span>Number</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="input-wrapper">
+                        <i class="input-icon fas fa-lock"></i>
+                        <input type="password" class="form-input" id="signupConfirmPassword" placeholder="Confirm Password" required>
+                    </div>
+                    <!-- Password match requirement hidden -->
+                    <div class="requirements" style="display: none;">
+                        <div class="requirement" id="passwordMatch">
+                            <i class="fas fa-circle"></i>
+                            <span>Passwords match</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checkbox-wrapper">
+                    <input type="checkbox" id="agreeTerms" required>
+                    <label for="agreeTerms">
+                        I agree to <a href="#" onclick="alert('Terms and conditions would appear here in a real application.'); return false;">Terms</a> & <a href="#" onclick="alert('Privacy policy would appear here in a real application.'); return false;">Privacy</a>
+                    </label>
+                </div>
+
+                <button type="submit" class="submit-btn">Create Account</button>
+
+                <!-- No social login in signup form to save space -->
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // User database simulation
+        const usersDatabase = [
+            { 
+                email: 'demo@medigear.com', 
+                password: '123456', 
+                name: 'Demo User',
+                createdAt: new Date().toISOString()
+            }
+        ];
+
+        // Toggle between login and signup
+        function togglePanel() {
+            const wrapper = document.getElementById('authWrapper');
+            const loginForm = document.getElementById('loginForm');
+            const signupForm = document.getElementById('signupForm');
+            const welcomeTitle = document.getElementById('welcomeTitle');
+            const welcomeDescription = document.getElementById('welcomeDescription');
+            const toggleText = document.getElementById('toggleText');
+            
+            wrapper.classList.toggle('signup-mode');
+            
+            if (wrapper.classList.contains('signup-mode')) {
+                // Switch to Signup
+                welcomeTitle.textContent = 'Hello, Patient!';
+                welcomeDescription.textContent = 'Enter your personal details and start your journey with us';
+                toggleText.textContent = 'Sign In';
+                loginForm.classList.remove('active');
+                signupForm.classList.add('active');
+                initPasswordStrength();
+            } else {
+                // Switch to Login
+                welcomeTitle.textContent = 'Welcome Back!';
+                welcomeDescription.textContent = 'To keep connected with us please login with your personal info';
+                toggleText.textContent = 'Sign Up';
+                signupForm.classList.remove('active');
+                loginForm.classList.add('active');
+            }
+            
+            hideAlerts();
+        }
+
+        // Show alert
+        function showAlert(message, type = 'success') {
+            const successAlert = document.getElementById('successAlert');
+            const errorAlert = document.getElementById('errorAlert');
+            
+            hideAlerts();
+            
+            if (type === 'success') {
+                document.getElementById('successMessage').textContent = message;
+                successAlert.classList.add('show');
+            } else {
+                document.getElementById('errorMessage').textContent = message;
+                errorAlert.classList.add('show');
+            }
+            
+            setTimeout(hideAlerts, 4000);
+        }
+
+        function hideAlerts() {
+            document.getElementById('successAlert').classList.remove('show');
+            document.getElementById('errorAlert').classList.remove('show');
+        }
+
+        // Social login
+        function socialLogin(provider) {
+            showAlert(`${provider.charAt(0).toUpperCase() + provider.slice(1)} login coming soon!`, 'error');
+        }
+
+        // Quick login function
+        function quickLogin() {
+            document.getElementById('loginEmail').value = 'demo@medigear.com';
+            document.getElementById('loginPassword').value = '123456';
+            
+            const submitBtn = document.querySelector('#loginForm .submit-btn');
+            submitBtn.click();
+        }
+
+        // Password strength checker
+        function initPasswordStrength() {
+            const passwordInput = document.getElementById('signupPassword');
+            const confirmPasswordInput = document.getElementById('signupConfirmPassword');
+            
+            if (passwordInput) {
+                passwordInput.addEventListener('input', checkPasswordStrength);
+            }
+            if (confirmPasswordInput) {
+                confirmPasswordInput.addEventListener('input', checkPasswordMatch);
+            }
+        }
+
+        function checkPasswordStrength() {
+            const password = document.getElementById('signupPassword').value;
+            const strengthBar = document.getElementById('strengthBar');
+            const strengthText = document.getElementById('strengthText');
+            
+            if (!strengthBar) return;
+            
+            // Reset
+            strengthBar.className = 'strength-bar';
+            
+            // Check requirements
+            const hasLength = password.length >= 8;
+            const hasUppercase = /[A-Z]/.test(password);
+            const hasLowercase = /[a-z]/.test(password);
+            const hasNumber = /[0-9]/.test(password);
+            
+            // Update requirement indicators (but they're hidden)
+            updateRequirement('reqLength', hasLength);
+            updateRequirement('reqUppercase', hasUppercase);
+            updateRequirement('reqLowercase', hasLowercase);
+            updateRequirement('reqNumber', hasNumber);
+            
+            // Calculate strength
+            let strength = 0;
+            if (hasLength) strength++;
+            if (hasUppercase) strength++;
+            if (hasLowercase) strength++;
+            if (hasNumber) strength++;
+            
+            // Update strength indicator
+            let strengthLevel = '';
+            switch(strength) {
+                case 0:
+                case 1:
+                    strengthLevel = 'strength-weak';
+                    if (strengthText) strengthText.textContent = 'Weak';
+                    break;
+                case 2:
+                    strengthLevel = 'strength-fair';
+                    if (strengthText) strengthText.textContent = 'Fair';
+                    break;
+                case 3:
+                    strengthLevel = 'strength-good';
+                    if (strengthText) strengthText.textContent = 'Good';
+                    break;
+                case 4:
+                    strengthLevel = 'strength-strong';
+                    if (strengthText) strengthText.textContent = 'Strong';
+                    break;
+            }
+            
+            strengthBar.className = 'strength-bar ' + strengthLevel;
+        }
+
+        function updateRequirement(elementId, isMet) {
+            const element = document.getElementById(elementId);
+            if (!element) return;
+            
+            if (isMet) {
+                element.classList.add('met');
+                const icon = element.querySelector('i');
+                if (icon) icon.className = 'fas fa-check-circle';
+            } else {
+                element.classList.remove('met');
+                const icon = element.querySelector('i');
+                if (icon) icon.className = 'fas fa-circle';
+            }
+        }
+
+        function checkPasswordMatch() {
+            const password = document.getElementById('signupPassword').value;
+            const confirmPassword = document.getElementById('signupConfirmPassword').value;
+            const matchElement = document.getElementById('passwordMatch');
+            
+            if (!matchElement) return false;
+            
+            if (confirmPassword === '') {
+                matchElement.classList.remove('met');
+                const icon = matchElement.querySelector('i');
+                if (icon) icon.className = 'fas fa-circle';
+                return false;
+            }
+            
+            if (password === confirmPassword) {
+                matchElement.classList.add('met');
+                const icon = matchElement.querySelector('i');
+                if (icon) icon.className = 'fas fa-check-circle';
+                return true;
+            } else {
+                matchElement.classList.remove('met');
+                const icon = matchElement.querySelector('i');
+                if (icon) icon.className = 'fas fa-circle';
+                return false;
+            }
+        }
+
+        // Login form submission
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const submitBtn = e.target.querySelector('.submit-btn');
+            
+            submitBtn.classList.add('loading');
+            submitBtn.disabled = true;
+            
+            setTimeout(() => {
+                // Check credentials
+                const storedUsers = JSON.parse(localStorage.getItem('medigear_users') || '[]');
+                const user = storedUsers.find(u => u.email === email && u.password === password);
+                
+                // Check demo credentials
+                const demoUser = usersDatabase.find(u => u.email === email && u.password === password);
+                
+                if (user || demoUser) {
+                    showAlert('Login successful! Redirecting...', 'success');
+                    
+                    // Store login state
+                    localStorage.setItem('medigear_logged_in', 'true');
+                    localStorage.setItem('medigear_username', user ? user.name : demoUser.name);
+                    localStorage.setItem('medigear_email', email);
+                    
+                    setTimeout(() => {
+                        window.location.href = 'app.html';
+                    }, 1500);
+                } else {
+                    showAlert('Invalid email or password. Try: demo@medigear.com / 123456', 'error');
+                    submitBtn.classList.remove('loading');
+                    submitBtn.disabled = false;
+                }
+            }, 1000);
+        });
+
+        // Signup form submission
+        document.getElementById('signupForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('signupName').value;
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+            const confirmPassword = document.getElementById('signupConfirmPassword').value;
+            const agreeTerms = document.getElementById('agreeTerms').checked;
+            const submitBtn = e.target.querySelector('.submit-btn');
+            
+            // Validation
+            if (!agreeTerms) {
+                showAlert('Please agree to the Terms & Conditions', 'error');
+                return;
+            }
+            
+            if (password.length < 8) {
+                showAlert('Password must be at least 8 characters', 'error');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                showAlert('Passwords do not match', 'error');
+                return;
+            }
+            
+            submitBtn.classList.add('loading');
+            submitBtn.disabled = true;
+            
+            setTimeout(() => {
+                // Check if email exists
+                const storedUsers = JSON.parse(localStorage.getItem('medigear_users') || '[]');
+                const existingUser = storedUsers.find(u => u.email === email);
+                
+                if (existingUser) {
+                    showAlert('Email already registered. Please login.', 'error');
+                    submitBtn.classList.remove('loading');
+                    submitBtn.disabled = false;
+                    return;
+                }
+                
+                // Create new user
+                const newUser = {
+                    name,
+                    email,
+                    password,
+                    createdAt: new Date().toISOString()
+                };
+                
+                storedUsers.push(newUser);
+                localStorage.setItem('medigear_users', JSON.stringify(storedUsers));
+                
+                showAlert('Account created successfully! Redirecting...', 'success');
+                
+                // Auto login
+                localStorage.setItem('medigear_logged_in', 'true');
+                localStorage.setItem('medigear_username', name);
+                localStorage.setItem('medigear_email', email);
+                
+                // Store profile data
+                const profileData = {
+                    name: name,
+                    email: email,
+                    createdAt: new Date().toISOString()
+                };
+                localStorage.setItem('medigear_profile', JSON.stringify(profileData));
+                
+                setTimeout(() => {
+                    window.location.href = 'app.html';
+                }, 1500);
+            }, 1000);
+        });
+
+        // Check if already logged in
+        if (localStorage.getItem('medigear_logged_in') === 'true') {
+            const username = localStorage.getItem('medigear_username');
+            const email = localStorage.getItem('medigear_email');
+            
+            // Auto-fill login form
+            document.getElementById('loginEmail').value = email || '';
+            document.getElementById('loginPassword').value = '';
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Quick login with Ctrl+Enter
+            if (e.ctrlKey && e.key === 'Enter') {
+                if (document.getElementById('loginForm').classList.contains('active')) {
+                    quickLogin();
+                }
+            }
+            
+            // Switch tabs with Ctrl+1 and Ctrl+2
+            if (e.ctrlKey) {
+                if (e.key === '1') {
+                    document.getElementById('authWrapper').classList.remove('signup-mode');
+                    document.getElementById('loginForm').classList.add('active');
+                    document.getElementById('signupForm').classList.remove('active');
+                    document.getElementById('welcomeTitle').textContent = 'Welcome Back!';
+                    document.getElementById('welcomeDescription').textContent = 'To keep connected with us please login with your personal info';
+                    document.getElementById('toggleText').textContent = 'Sign Up';
+                } else if (e.key === '2') {
+                    document.getElementById('authWrapper').classList.add('signup-mode');
+                    document.getElementById('signupForm').classList.add('active');
+                    document.getElementById('loginForm').classList.remove('active');
+                    document.getElementById('welcomeTitle').textContent = 'Hello, Patient!';
+                    document.getElementById('welcomeDescription').textContent = 'Enter your personal details and start your journey with us';
+                    document.getElementById('toggleText').textContent = 'Sign In';
+                    initPasswordStrength();
+                }
+            }
+        });
+    </script>
+</body>
+</html>

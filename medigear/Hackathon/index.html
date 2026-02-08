@@ -1,0 +1,1317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediGear - Smart Medicine Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Add Lottie Player for AI Animations -->
+<script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --soft-lavender-blue: #C7D2FE;
+            --misty-sky-blue: #DFF6FF;
+            --pale-aqua: #E6FAF5;
+            --blush-pink: #F5D0FE;
+            --off-white: #FAFAFF;
+            --glass-bg: rgba(199, 210, 254, 0.15);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --text-dark: #1F2937;
+            --text-medium: #4B5563;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--soft-lavender-blue) 0%, var(--misty-sky-blue) 100%);
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Header with Auth Buttons */
+        .header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo i {
+            font-size: 28px;
+            color: var(--text-dark);
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            letter-spacing: -0.5px;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .auth-btn {
+            padding: 12px 28px;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .login-btn {
+            background: transparent;
+            border: 2px solid var(--text-dark);
+            color: var(--text-dark);
+        }
+
+        .login-btn:hover {
+            background: rgba(31, 41, 55, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .signup-btn {
+            background: var(--text-dark);
+            color: white;
+            border: 2px solid var(--text-dark);
+        }
+
+        .signup-btn:hover {
+            background: rgba(31, 41, 55, 0.9);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Animated Background */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: -2;
+            overflow: hidden;
+        }
+
+        .bg-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.2; /* Adjust opacity (0.1 to 0.5) */
+    z-index: -2;
+}
+
+        .floating-shapes {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.2;
+            animation: float 15s infinite linear;
+        }
+
+        .shape:nth-child(1) {
+            width: 80px;
+            height: 80px;
+            background-color: var(--blush-pink);
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .shape:nth-child(2) {
+            width: 120px;
+            height: 120px;
+            background-color: var(--pale-aqua);
+            top: 60%;
+            left: 80%;
+            animation-delay: -5s;
+        }
+
+        .shape:nth-child(3) {
+            width: 60px;
+            height: 60px;
+            background-color: var(--soft-lavender-blue);
+            top: 80%;
+            left: 20%;
+            animation-delay: -10s;
+        }
+
+        .shape:nth-child(4) {
+            width: 100px;
+            height: 100px;
+            background-color: var(--misty-sky-blue);
+            top: 20%;
+            left: 85%;
+            animation-delay: -7s;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            33% {
+                transform: translateY(-30px) rotate(120deg);
+            }
+            66% {
+                transform: translateY(20px) rotate(240deg);
+            }
+        }
+
+        /* Hero Section */
+        .hero {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+            padding: 0 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-content {
+            max-width: 900px;
+            padding: 50px;
+            border-radius: 30px;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            margin-bottom: 50px;
+        }
+
+        .typing-container {
+            margin-bottom: 40px;
+            min-height: 140px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .typing-text {
+            font-size: 3.8rem;
+            font-weight: 800;
+            line-height: 1.1;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 3px;
+            height: 3.8rem;
+            background-color: var(--text-dark);
+            margin-left: 5px;
+            animation: blink 1s infinite;
+            vertical-align: bottom;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        .typing-subtext {
+            font-size: 1.3rem;
+            color: var(--text-medium);
+            font-weight: 400;
+            margin-top: 15px;
+            max-width: 700px;
+            line-height: 1.5;
+        }
+
+        .enter-button {
+            display: inline-block;
+            padding: 18px 45px;
+            background: linear-gradient(135deg, var(--soft-lavender-blue), var(--blush-pink));
+            color: var(--text-dark);
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 25px rgba(199, 210, 254, 0.4);
+            border: none;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+
+        .enter-button:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 35px rgba(199, 210, 254, 0.6);
+        }
+
+        .enter-button::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: left 0.7s;
+        }
+
+        .enter-button:hover::after {
+            left: 100%;
+        }
+
+        /* Features Section */
+        .features {
+            padding: 100px 20px;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .features h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 60px;
+            color: var(--text-dark);
+            letter-spacing: -0.5px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.9);
+            border-color: rgba(255, 255, 255, 0.5);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+        }
+
+        .feature-card {
+            cursor: pointer;
+        }
+
+        .feature-card a {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            height: 100%;
+        }
+
+        /* Feature Navigation */
+        .feature-nav {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .feature-nav-btn {
+            padding: 12px 25px;
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.8);
+            border: 2px solid var(--text-dark);
+            color: var(--text-dark);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .feature-nav-btn:hover {
+            background: var(--text-dark);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(31, 41, 55, 0.2);
+        }
+
+        .feature-nav-btn.active {
+            background: var(--soft-lavender-blue);
+            border-color: var(--soft-lavender-blue);
+        }
+
+        /* Back to Home Button */
+        .back-home-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 28px;
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid var(--text-dark);
+            border-radius: 50px;
+            color: var(--text-dark);
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 999;
+            display: none;
+        }
+
+        .back-home-btn:hover {
+            background: var(--text-dark);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .back-home-btn.show {
+            display: block;
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--soft-lavender-blue), var(--blush-pink));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+        }
+
+        .feature-icon i {
+            font-size: 36px;
+            color: var(--text-dark);
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--text-dark);
+        }
+/* Enhanced AI Assistant Styles */
+.ai-assistant {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 100px;
+    height: 100px;
+    background: linear-gradient(135deg, var(--soft-lavender-blue), var(--blush-pink));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+    animation: float-ai 6s ease-in-out infinite;
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.ai-assistant:hover {
+    transform: scale(1.1);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+}
+
+.ai-bot-icon {
+    width: 70px;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* AI Bot with pulsing animation */
+.ai-bot-pulse {
+    position: relative;
+}
+
+.ai-bot-pulse::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 120px;
+    height: 120px;
+    background: linear-gradient(135deg, var(--soft-lavender-blue), var(--blush-pink));
+    border-radius: 50%;
+    opacity: 0.3;
+    animation: pulse 2s infinite;
+    z-index: -1;
+}
+
+@keyframes pulse {
+    0% {
+        transform: translate(-50%, -50%) scale(0.8);
+        opacity: 0.3;
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.1;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(0.8);
+        opacity: 0.3;
+    }
+}
+
+/* AI Chat Bubble */
+.ai-chat-bubble {
+    position: absolute;
+    bottom: 130px;
+    right: 20px;
+    background: white;
+    border-radius: 20px;
+    padding: 20px;
+    width: 320px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.5s ease;
+    pointer-events: none;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(199, 210, 254, 0.3);
+    display: none;
+    z-index: 1000;
+}
+
+.ai-chat-bubble.active {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+    display: block;
+}
+
+.ai-chat-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(199, 210, 254, 0.3);
+}
+
+.ai-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bot-avatar-small {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--soft-lavender-blue), var(--blush-pink));
+}
+
+.bot-avatar-small img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.ai-name {
+    font-weight: 700;
+    color: var(--text-dark);
+    font-size: 1.1rem;
+}
+
+.ai-status {
+    font-size: 0.8rem;
+    color: var(--text-medium);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.ai-status i {
+    color: #10B981;
+    font-size: 0.6rem;
+}
+
+/* Enhanced AI Chat Interface */
+.ai-messages-container {
+    max-height: 300px;
+    overflow-y: auto;
+    margin-bottom: 15px;
+    padding-right: 5px;
+}
+
+.message {
+    display: flex;
+    margin-bottom: 15px;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.bot-message {
+    flex-direction: row;
+}
+
+.message-avatar {
+    margin-right: 10px;
+}
+
+.message-content {
+    flex: 1;
+}
+
+.message-text {
+    background: rgba(199, 210, 254, 0.1);
+    padding: 12px 15px;
+    border-radius: 15px;
+    border-top-left-radius: 5px;
+    color: var(--text-dark);
+    line-height: 1.4;
+    font-size: 0.95rem;
+}
+
+.message-features {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.feature-tag {
+    background: rgba(199, 210, 254, 0.2);
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    color: var(--text-dark);
+}
+
+.message-time {
+    font-size: 0.7rem;
+    color: var(--text-medium);
+    margin-top: 5px;
+    text-align: right;
+}
+
+.ai-input-area {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.ai-chat-input {
+    flex: 1;
+    padding: 12px 15px;
+    border: 2px solid rgba(199, 210, 254, 0.3);
+    border-radius: 25px;
+    font-family: 'Inter', sans-serif;
+    background: rgba(255, 255, 255, 0.9);
+    font-size: 0.9rem;
+}
+
+.ai-send-btn {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--soft-lavender-blue), var(--blush-pink));
+    border: none;
+    color: var(--text-dark);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1.1rem;
+}
+
+.ai-send-btn:hover {
+    transform: scale(1.1);
+}
+
+.ai-quick-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.quick-action {
+    flex: 1;
+    padding: 10px;
+    background: rgba(199, 210, 254, 0.1);
+    border: 1px solid rgba(199, 210, 254, 0.3);
+    border-radius: 10px;
+    color: var(--text-dark);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.quick-action:hover {
+    background: linear-gradient(135deg, var(--soft-lavender-blue), var(--blush-pink));
+    transform: translateY(-2px);
+}
+
+/* Animated bot typing indicator */
+.typing-indicator {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    background: rgba(199, 210, 254, 0.1);
+    border-radius: 15px;
+    margin-bottom: 10px;
+}
+
+.typing-dots {
+    display: flex;
+    gap: 4px;
+    margin-left: 10px;
+}
+
+.typing-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--soft-lavender-blue);
+    border-radius: 50%;
+    animation: typing 1.4s infinite ease-in-out both;
+}
+
+.typing-dot:nth-child(1) { animation-delay: -0.32s; }
+.typing-dot:nth-child(2) { animation-delay: -0.16s; }
+.typing-dot:nth-child(3) { animation-delay: 0s; }
+
+@keyframes typing {
+    0%, 80%, 100% { transform: scale(0); }
+    40% { transform: scale(1); }
+}
+
+        @keyframes float-ai {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 40px 20px;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        footer p {
+            color: var(--text-medium);
+            margin-top: 20px;
+        }
+
+        /* Loading Screen (Initially Hidden) */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--off-white);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .loading-screen.active {
+            display: flex;
+        }
+
+        .loading-pill {
+            width: 120px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--soft-lavender-blue), var(--blush-pink));
+            border-radius: 60px;
+            position: relative;
+            animation: pill-rotate 3s infinite ease-in-out;
+            margin-bottom: 40px;
+        }
+
+        .loading-pill::before {
+            content: '';
+            position: absolute;
+            width: 100px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50px;
+            top: 5px;
+            left: 10px;
+        }
+
+        @keyframes pill-rotate {
+            0% { transform: rotate(0deg); }
+            25% { transform: rotate(90deg); }
+            50% { transform: rotate(180deg); }
+            75% { transform: rotate(270deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-top: 20px;
+        }
+
+        .loading-dots {
+            display: flex;
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .loading-dots span {
+            width: 12px;
+            height: 12px;
+            background: linear-gradient(135deg, var(--soft-lavender-blue), var(--blush-pink));
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+
+        .loading-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .loading-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                padding: 15px 20px;
+            }
+            
+            .auth-buttons {
+                gap: 10px;
+            }
+            
+            .auth-btn {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+            
+            .typing-text {
+                font-size: 2.5rem;
+            }
+            
+            .cursor {
+                height: 2.5rem;
+            }
+            
+            .hero-content {
+                padding: 30px 20px;
+            }
+            
+          .ai-assistant {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .ai-bot-icon {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .ai-chat-bubble {
+        width: 280px;
+        right: 10px;
+        bottom: 100px;
+    }
+}
+        
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-pill"></div>
+        <div class="loading-text">Loading MediGear</div>
+        <div class="loading-dots">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+
+    <!-- Header with Auth Buttons -->
+    <header class="header">
+        <div class="logo">
+            <i class="fas fa-pills"></i>
+            <h1>MediGear</h1>
+        </div>
+        <div class="auth-buttons">
+            <a href="login.html" class="auth-btn login-btn">Log In</a>
+            <a href="login.html?signup=true" class="auth-btn signup-btn">Sign Up</a>
+        </div>
+    </header>
+
+    <!-- Back to Home Button -->
+    <a href="#" onclick="goBackToHome(); return false;" class="back-home-btn">
+        <i class="fas fa-arrow-left"></i> Back to Home
+    </a>
+
+     <!-- Animated Background -->
+    <div class="animated-bg">
+        <!-- Video Background -->
+        <video autoplay muted loop playsinline class="bg-video">
+            <source src="bg.mp4" type="video/mp4">
+        </video>
+        <!-- Keep floating shapes on top -->
+        <div class="floating-shapes">
+            <div class="shape"></div>
+            <div class="shape"></div>
+            <div class="shape"></div>
+            <div class="shape"></div>
+            
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="typing-container">
+                <div class="typing-text" id="typingText"></div>
+                <div class="typing-subtext" id="typingSubtext"></div>
+            </div>
+            <a href="#" class="enter-button" id="enterButton">
+                <i class="fas fa-arrow-right"></i> Enter MediGear
+            </a>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <h2>Smart Features for Your Health</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-bell"></i>
+                </div>
+                <h3>Smart Reminders</h3>
+                <p>Never miss a dose with intelligent medicine reminders</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-file-prescription"></i>
+                </div>
+                <h3>Prescription Scanner</h3>
+                <p>Scan prescriptions with AI-powered OCR technology</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h3>Health Analytics</h3>
+                <p>Track adherence and view detailed health reports</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <h3>AI Health Assistant</h3>
+                <p>Get personalized health recommendations and answers</p>
+            </div>
+        </div>
+        <div class="feature-nav">
+            <button class="feature-nav-btn active" onclick="navigateToFeature('reminders')"><i class="fas fa-bell"></i> Smart Reminders</button>
+            <button class="feature-nav-btn" onclick="navigateToFeature('scanner')"><i class="fas fa-file-prescription"></i> Prescription Scanner</button>
+            <button class="feature-nav-btn" onclick="navigateToFeature('analytics')"><i class="fas fa-chart-line"></i> Health Analytics</button>
+            <button class="feature-nav-btn" onclick="navigateToFeature('assistant')"><i class="fas fa-robot"></i> AI Assistant</button>
+        </div>
+    </section>
+
+  <!-- Floating AI Assistant with Animation -->
+<div class="ai-assistant ai-bot-pulse" id="aiAssistant">
+    <div class="ai-bot-icon">
+        <!-- Animated AI Bot -->
+        <video 
+    id="aiBotVideo"
+    autoplay 
+    loop 
+    muted 
+    playsinline
+    style="width: 70px; height: 70px; border-radius: 50%; object-fit: cover;">
+    <source src="YOUR_VIDEO_URL_HERE" type="video/mp4">
+   
+</video>
+<img 
+    id="aiBotImage"
+    src="YOUR_IMAGE_URL_HERE" 
+    alt="AI Assistant"
+    style="width: 70px; height: 70px; border-radius: 50%; object-fit: cover;">
+    </div>
+    
+    <!-- AI Chat Bubble -->
+    <div class="ai-chat-bubble" id="aiChatBubble">
+        <div class="ai-chat-header">
+            <div class="ai-avatar">
+             <div class="bot-avatar-small">
+    <img src="YOUR_CHAT_AVATAR_IMAGE_HERE" alt="AI Bot" style="width: 30px; height: 30px;">
+</div>
+            </div>
+            <div>
+                <div class="ai-name">MediGear AI</div>
+                <div class="ai-status"><i class="fas fa-circle"></i> Online • Ready to help</div>
+            </div>
+        </div>
+        
+        <!-- Chat Messages Container -->
+        <div class="ai-messages-container" id="aiMessages">
+            <!-- Bot's Welcome Message -->
+            <div class="message bot-message">
+             <div class="bot-avatar-small">
+    <img src="YOUR_CHAT_AVATAR_IMAGE_HERE" alt="AI Bot" style="width: 30px; height: 30px;">
+</div>
+                </div>
+                <div class="message-content">
+                    <div class="message-text">
+                        Hello! I'm your MediGear AI Assistant. I can help you with:
+                    </div>
+                    <div class="message-features">
+                        <span class="feature-tag">Medicine Reminders</span>
+                        <span class="feature-tag">Drug Interactions</span>
+                        <span class="feature-tag">Side Effects</span>
+                        <span class="feature-tag">Health Tips</span>
+                    </div>
+                    <div class="message-time">Just now</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Chat Input Area -->
+        <div class="ai-input-area">
+            <input type="text" class="ai-chat-input" placeholder="Ask about medicines or health...">
+            <button class="ai-send-btn">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="ai-quick-actions">
+            <button class="quick-action" onclick="sendQuickQuestion('Set a medicine reminder')">
+                <i class="fas fa-bell"></i> Reminder
+            </button>
+            <button class="quick-action" onclick="sendQuickQuestion('What are side effects of')">
+                <i class="fas fa-pills"></i> Side Effects
+            </button>
+            <button class="quick-action" onclick="sendQuickQuestion('Best time to take')">
+                <i class="fas fa-clock"></i> Timing
+            </button>
+        </div>
+    </div>
+</div>
+
+    <!-- Footer -->
+    <footer>
+        <p>© 2023 MediGear. All rights reserved.</p>
+        <p>Your trusted medicine management companion</p>
+    </footer>
+
+    <script>
+        // DOM Elements
+        const typingText = document.getElementById('typingText');
+        const typingSubtext = document.getElementById('typingSubtext');
+        const enterButton = document.getElementById('enterButton');
+        const loadingScreen = document.getElementById('loadingScreen');
+        const aiAssistant = document.getElementById('aiAssistant');
+        
+        // Typing Animation
+        const welcomeText = "Welcome to MediGear";
+        const subText = "Your intelligent medicine management companion for a healthier life.";
+        
+        let charIndex = 0;
+        let subCharIndex = 0;
+        let isSubTyping = false;
+        
+        function typeWriter() {
+            if (!isSubTyping) {
+                // Type main welcome text
+                if (charIndex < welcomeText.length) {
+                    typingText.textContent += welcomeText.charAt(charIndex);
+                    charIndex++;
+                    setTimeout(typeWriter, 100);
+                } else {
+                    // Add blinking cursor
+                    typingText.innerHTML = welcomeText + '<span class="cursor"></span>';
+                    
+                    // Start typing subtext after a pause
+                    setTimeout(() => {
+                        isSubTyping = true;
+                        typeWriter();
+                    }, 1000);
+                }
+            } else {
+                // Type subtext
+                if (subCharIndex < subText.length) {
+                    typingSubtext.textContent += subText.charAt(subCharIndex);
+                    subCharIndex++;
+                    setTimeout(typeWriter, 50);
+                }
+            }
+        }
+        
+        // Initialize typing animation
+        setTimeout(typeWriter, 500);
+        
+        // Enter MediGear button click
+        enterButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            
+            // Show loading screen
+            loadingScreen.classList.add('active');
+            
+            // Simulate loading for 2 seconds, then redirect to main app
+            setTimeout(() => {
+                window.location.href = 'app.html';
+            }, 2000);
+        });
+        
+    // AI Bot Animation Control
+let aiAnimation;
+
+// Initialize AI Bot Animation
+document.addEventListener('DOMContentLoaded', function() {
+    // For Lottie animation control
+    aiAnimation = document.getElementById('aiBotAnimation');
+    
+    // Make AI bot wave on hover
+    aiAssistant.addEventListener('mouseenter', () => {
+        if (aiAnimation && aiAnimation.play) {
+            aiAnimation.setSpeed(2); // Speed up animation on hover
+        }
+    });
+    
+    aiAssistant.addEventListener('mouseleave', () => {
+        if (aiAnimation && aiAnimation.play) {
+            aiAnimation.setSpeed(1); // Return to normal speed
+        }
+    });
+});
+
+// AI Assistant interaction - Now opens chat instead of redirecting
+aiAssistant.addEventListener('click', (e) => {
+    e.preventDefault();
+    const chatBubble = document.getElementById('aiChatBubble');
+    chatBubble.classList.toggle('active');
+    
+    // Make AI bot animation react to click
+    if (aiAnimation && aiAnimation.play) {
+        aiAnimation.setSpeed(3);
+        setTimeout(() => {
+            aiAnimation.setSpeed(1);
+        }, 500);
+    }
+});
+
+// Close AI chat when clicking outside
+document.addEventListener('click', (e) => {
+    if (!e.target.closest('.ai-assistant') && !e.target.closest('.ai-chat-bubble')) {
+        document.getElementById('aiChatBubble').classList.remove('active');
+    }
+});
+
+// AI Action Functions
+window.sendQuickQuestion = function(question) {
+    const messagesContainer = document.getElementById('aiMessages');
+    const chatInput = document.querySelector('.ai-chat-input');
+    
+    // Add user message
+    const userMessage = document.createElement('div');
+    userMessage.className = 'message user-message';
+    userMessage.innerHTML = `
+        <div class="message-content" style="text-align: right; margin-left: auto;">
+            <div class="message-text" style="background: linear-gradient(135deg, var(--soft-lavender-blue), var(--blush-pink)); color: white; border-top-right-radius: 5px; border-top-left-radius: 15px; max-width: 80%; margin-left: auto;">
+                ${question}
+            </div>
+            <div class="message-time">Just now</div>
+        </div>
+    `;
+    messagesContainer.appendChild(userMessage);
+    
+    // Show typing indicator
+    const typingIndicator = document.createElement('div');
+    typingIndicator.className = 'typing-indicator';
+    typingIndicator.innerHTML = `
+        <div class="bot-avatar-small">
+            <img src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png" alt="AI Bot" style="width: 30px; height: 30px;">
+        </div>
+        <div class="typing-dots">
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+        </div>
+    `;
+    messagesContainer.appendChild(typingIndicator);
+    
+    // Scroll to bottom
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    
+    // Simulate AI response after delay
+    setTimeout(() => {
+        typingIndicator.remove();
+        
+        // Get AI response
+        const responses = {
+            'Set a medicine reminder': "I can help you set up medicine reminders! What medicine and what time would you like reminders for?",
+            'What are side effects of': "I can check side effects for any medicine. Which specific medicine are you asking about?",
+            'Best time to take': "The best time to take medicine depends on the type. For example, some should be taken with food, others on an empty stomach. Which medicine?"
+        };
+        
+        const response = responses[question] || "I'd be happy to help with that! Could you please provide more details?";
+        
+        // Add bot response
+        const botMessage = document.createElement('div');
+        botMessage.className = 'message bot-message';
+        botMessage.innerHTML = `
+            <div class="message-avatar">
+                <div class="bot-avatar-small">
+                    <img src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png" alt="AI Bot" style="width: 30px; height: 30px;">
+                </div>
+            </div>
+            <div class="message-content">
+                <div class="message-text">
+                    ${response}
+                </div>
+                <div class="message-time">Just now</div>
+            </div>
+        `;
+        messagesContainer.appendChild(botMessage);
+        
+        // Scroll to bottom again
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        
+        // Animate the bot avatar
+        if (aiAnimation && aiAnimation.play) {
+            aiAnimation.setSpeed(2);
+            setTimeout(() => {
+                aiAnimation.setSpeed(1);
+            }, 500);
+        }
+    }, 1500);
+};
+
+// Send message on Enter key
+document.querySelector('.ai-chat-input')?.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter' && this.value.trim()) {
+        sendQuickQuestion(this.value.trim());
+        this.value = '';
+    }
+});
+
+// Send button click
+document.querySelector('.ai-send-btn')?.addEventListener('click', function() {
+    const input = document.querySelector('.ai-chat-input');
+    if (input && input.value.trim()) {
+        sendQuickQuestion(input.value.trim());
+        input.value = '';
+    }
+});
+
+// Make AI bot bounce occasionally
+setInterval(() => {
+    const chatBubble = document.getElementById('aiChatBubble');
+    if (!chatBubble.classList.contains('active')) {
+        aiAssistant.style.animation = 'none';
+        setTimeout(() => {
+            aiAssistant.style.animation = 'float-ai 6s ease-in-out infinite';
+        }, 100);
+    }
+}, 10000);
+        
+        // Interactive hover effects for feature cards
+        const featureCards = document.querySelectorAll('.feature-card');
+        featureCards.forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-10px) scale(1.02)';
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+
+        // Feature Navigation Function
+        function navigateToFeature(feature) {
+            const featurePages = {
+                'reminders': 'features-reminders.html',
+                'scanner': 'features-scanner.html',
+                'analytics': 'features-analytics.html',
+                'assistant': 'features-assistant.html'
+            };
+            
+            if (featurePages[feature]) {
+                window.location.href = featurePages[feature];
+            }
+        }
+
+        // Back to Home Function
+        function goBackToHome() {
+            window.location.href = 'index.html';
+        }
+
+        // Show/Hide Back to Home button based on page
+        function updateBackHomeButton() {
+            const currentPage = window.location.pathname.split('/').pop();
+            const backBtn = document.querySelector('.back-home-btn');
+            
+            if (currentPage && currentPage !== 'index.html' && currentPage !== '') {
+                if (backBtn) backBtn.classList.add('show');
+            } else {
+                if (backBtn) backBtn.classList.remove('show');
+            }
+        }
+
+        // Initialize back home button visibility on page load
+        document.addEventListener('DOMContentLoaded', updateBackHomeButton);
+    </script>
+</body>
+</html>
